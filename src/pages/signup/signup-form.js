@@ -1,62 +1,92 @@
+import {useState} from "react"
 import {useForm, Controller} from 'react-hook-form'
-import {makeStyles, TextField, FormControl, FormGroup, FormControlLabel, Checkbox, Button, Box, FormHelperText} from '@material-ui/core'
+import {Signup} from '../../api/service'
+import {Alert} from '../../components'
+import {email as emailRules, password as passwordRules, firstname as firstnameRules} from '../../components/form-control/rules-valid-form'
+import {makeStyles, TextField, FormControl, FormGroup, FormControlLabel, Checkbox, Button, Box, FormHelperText, IconButton} from '@material-ui/core'
 import {Check} from '@material-ui/icons'
 import {colors, font} from '../../theme'
+import InputAdornment from "@material-ui/core/InputAdornment"
+import {VisibilityOutlined, VisibilityOffOutlined} from '@material-ui/icons'
 
 const SignUpForm = () => {
 
     const classes = useStyles()
 
+    const [errorMessage, setErrorMessage] = useState(undefined)
+    const [showPas, setShowPas] = useState(false)
+    const [alert, setAlert] = useState(false)
+
+    const handleClickShowPassword = () => {
+        setShowPas(!showPas)
+    }
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault()
+    }
+
     //react-hook-form
     const {
         handleSubmit,
         control,
+        watch,
         formState: {errors}
     } = useForm({mode: 'onBlur'})
 
     const onSubmit = data => {
-        console.log(data)
+        //console.log(data)
+        const signupData = {
+            email: data.email,
+            password: data.password,
+            returnSecureToken: true
+        }
+        Signup(signupData).then(
+            res => {
+                if(res.data.error.message === 'EMAIL_EXISTS') {
+                    setErrorMessage('Введенный адрес эл. почты уже зарегистрирован.')
+                    setAlert(true)
+                } else if(res.data.error.message === 'OPERATION_NOT_ALLOWED'){
+                    setErrorMessage('Пароль отклонён. Попробуйте еще раз.')
+                    setAlert(true)
+                } else if(res.data.error.message === 'TOO_MANY_ATTEMPTS_TRY_LATER'){
+                    setErrorMessage('Запросы с вашего устройства заблокированы из-из подозрительной активности.')
+                    setAlert(true)
+                }
+            }
+        )
     }
 
     return(
         <form onSubmit={handleSubmit(onSubmit)}>
             {/*firstname*/}
-            <Controller
-                control={control}
-                name='firstName'
-                defaultValue=''
-                rules={{
-                    required: true,
-                    minLength: 2,
-                    maxLength: 50
-                }}
-                render={({field: {onChange, onBlur, value}}) => (
-                    <TextField
-                        fullWidth
-                        label='Имя'
-                        color='primary'
-                        variant='outlined'
-                        onBlur={onBlur}
-                        onChange={onChange}
-                        value={value}
-                        helperText={
-                            (errors?.firstName?.type === "required" && <p>Поле не заполнено</p>) ||
-                            (errors?.firstName?.type === "minLength" && <p>Мин. длинна поля 2 символов</p>) ||
-                            (errors?.firstName?.type === "maxLength" && <p>Макс. длинна поля 50 символов</p>)
-                        }
-                    />
-                )}
-            />
+            {/*<Controller*/}
+            {/*    control={control}*/}
+            {/*    name='firstName'*/}
+            {/*    defaultValue=''*/}
+            {/*    rules={firstnameRules}*/}
+            {/*    render={({field: {onChange, onBlur, value}}) => (*/}
+            {/*        <TextField*/}
+            {/*            fullWidth*/}
+            {/*            label='Имя'*/}
+            {/*            color='primary'*/}
+            {/*            variant='outlined'*/}
+            {/*            onBlur={onBlur}*/}
+            {/*            onChange={onChange}*/}
+            {/*            value={value}*/}
+            {/*            helperText={*/}
+            {/*                (errors?.firstName?.type === "required" && <p>Поле не заполнено</p>) ||*/}
+            {/*                (errors?.firstName?.type === "minLength" && <p>Мин. длинна поля 2 символов</p>) ||*/}
+            {/*                (errors?.firstName?.type === "maxLength" && <p>Макс. длинна поля 50 символов</p>)*/}
+            {/*            }*/}
+            {/*        />*/}
+            {/*    )}*/}
+            {/*/>*/}
             {/*email*/}
             <Controller
                 control={control}
                 name='email'
                 defaultValue=''
-                rules={{
-                    required: true,
-                    maxLength: 50,
-                    pattern: /^\s*([\w.%+-]+)@([\w-]+\.)+([\w]{2,})\s*$/i
-                }}
+                rules={emailRules}
                 render={({field: {onChange, onBlur, value}}) => (
                     <TextField
                         fullWidth
@@ -70,6 +100,67 @@ const SignUpForm = () => {
                             (errors?.email?.type === "required" && <p>Поле не заполнено</p>) ||
                             (errors?.email?.type === "pattern" && <p>Указан некорректный e-mail</p>) ||
                             (errors?.email?.type === "maxLength" && <p>Макс. длинна поля 50 символов</p>)
+                        }
+                    />
+                )}
+            />
+            {/*password*/}
+            <Controller
+                control={control}
+                name='password'
+                defaultValue=''
+                rules={passwordRules}
+                render={({field: {onChange, onBlur, value}}) => (
+                    <TextField
+                        fullWidth
+                        type={showPas ? 'text' : 'password'}
+                        label='Пароль'
+                        color='primary'
+                        variant='outlined'
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        value={value}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                    >
+                                        {showPas ? <VisibilityOutlined /> : <VisibilityOffOutlined />}
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }}
+                        helperText={
+                            (errors?.password?.type === "required" && <p>Поле не заполнено</p>) ||
+                            (errors?.password?.type === "minLength" && <p>Мин. длинна пароля 8 символов</p>)
+                        }
+                    />
+                )}
+            />
+            {/*password*/}
+            <Controller
+                control={control}
+                name='repeatpassword'
+                defaultValue=''
+                rules={{
+                    required: true,
+                    validate: value => value === watch('password')
+                }}
+                render={({field: {onChange, onBlur, value}}) => (
+                    <TextField
+                        fullWidth
+                        type='text'
+                        label='Повторите пароль'
+                        color='primary'
+                        variant='outlined'
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        value={value}
+                        helperText={
+                            (errors?.repeatpassword?.type === "required" && <p>Поле не заполнено</p>) ||
+                            (errors?.repeatpassword?.type === "validate" && <p>Пароли не совпадают</p>)
                         }
                     />
                 )}
@@ -114,6 +205,15 @@ const SignUpForm = () => {
                     <FormHelperText>{errors?.checked?.type === "required" && <p className={classes.helperText}>Подтвердите согласие</p>}</FormHelperText>
                 </FormControl>
             </Box>
+            {/*alert*/}
+            <Alert
+                severity='error'
+                errorMessage={errorMessage}
+                show={alert}
+                onClose={() => {
+                    setAlert(false)
+                }}
+            />
             {/*submit button*/}
             <Box mt={2}>
                 <Button fullWidth type='submit' variant='contained' color='primary'>

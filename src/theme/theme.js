@@ -368,7 +368,7 @@ const theme = createTheme({
                 width: '100%',
                 whiteSpace: 'nowrap',
                 lineHeight: 1.1,
-                fontSize: 10,
+                fontSize: 11,
                 color: 'red',
                 transform: 'translate(10px, 8px)',
                 fontFamily: font.default,
@@ -387,7 +387,7 @@ const theme = createTheme({
         },
         MuiFormControl: {
             root: {
-                paddingBottom: 15,
+                paddingBottom: 17,
                 marginTop: 0,
                 marginBottom: 5,
                 maxWidth: '100%',

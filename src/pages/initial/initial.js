@@ -12,9 +12,7 @@ import {SIGNUP_MODAL, SIGNIN_MODAL} from '../../redux/actions/action-types'
 const InitialPage = () => {
 
     const classes = useStyles()
-
-    const {width, height} = useWindowDimensions()
-
+    const {height} = useWindowDimensions()
     const dispatch = useDispatch()
 
     const openSignUp = () => {
@@ -31,30 +29,37 @@ const InitialPage = () => {
                 <Box
                     width='100%'
                     height={height}
-                    minHeight={700}
+                    minHeight={800}
                     display='flex'
                     alignItems='center'
                     className={classes.container}
                 >
                     <Container maxWidth={'md'}>
-                        <Fade top cascade duration={1000} delay={600}>
+                        <Fade top duration={1000} delay={700}>
                             {/*<Box width='100%' display='flex' justifyContent='center'>*/}
                             {/*    <img src={logo} className={classes.logo} alt='...'/>*/}
                             {/*</Box>*/}
-                            <Box className={classes.title}>
-                                Поделись своими любимыми вело маршрутами<br/>
-                                Расскажи нам интересные истории о вело заездах
-                            </Box>
-                            <Grid container direction={'row'} justify={'space-evenly'} alignItems={'flex-start'} spacing={0}>
-                                <Grid item xs={12} md={'auto'}>
+                            <Grid container direction={'row'} justify={'space-evenly'} alignItems={'flex-start'} spacing={1}>
+                                <Grid item xs={12} sm={'auto'} style={{display: 'flex', justifyContent: 'center'}}>
                                     <Button classes={{root: classes.button}} onClick={openSignIn}>
                                         Войти
                                     </Button>
                                 </Grid>
-                                <Grid item xs={12} md={'auto'}>
+                                <Grid item xs={12} sm={'auto'} style={{display: 'flex', justifyContent: 'center'}}>
                                     <Button classes={{root: classes.button}} onClick={openSignUp}>
                                         Зарегистрироваться
                                     </Button>
+                                </Grid>
+                            </Grid>
+                        </Fade>
+                        <Fade top duration={1000} delay={500}>
+                            <Grid container direction={'row'} justify={'center'} alignItems={'center'} spacing={1}>
+                                <Grid item xs={11} md={9} >
+                                    <Box className={classes.title}>
+                                        Если любишь велосипеды,<br/>
+                                        поделись своими любимыми маршрутами и<br/>
+                                        расскажи нам интересные истории о велопоездках !
+                                    </Box>
                                 </Grid>
                             </Grid>
                         </Fade>
@@ -84,12 +89,14 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: 20
     },
     title: {
-        fontSize: 34,
+        fontSize: 24,
         fontWeight: 600,
         color: colors.white,
         textAlign: 'center',
         lineHeight: 1.5,
-        marginBottom: 40
+        borderRadius: 30,
+        padding: '25px 0',
+        backgroundColor: 'rgba(255, 255, 255, .15)'
     },
     button: {
         minHeight: 80,
@@ -98,12 +105,12 @@ const useStyles = makeStyles((theme) => ({
         color: colors.white,
         fontSize: 22,
         borderRadius: 50,
+        marginBottom: 40,
         transition: '.5s',
         '&:hover': {
+            transform: 'translate(0px, 5px)',
             backgroundColor: colors.white,
-            color: colors.blue,
-            // opacity: .9,
-            // boxShadow: '2px 1px 8px rgba(255, 255, 255, 0.3)',
+            color: colors.blue
         }
     }
 }))

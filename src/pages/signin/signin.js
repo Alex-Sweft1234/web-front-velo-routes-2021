@@ -7,7 +7,7 @@ const Signin = () => {
         <Dialog title='Авторизация' maxWidth='sm'>
             <Box pt={2} pb={8}>
                 <Grid container direction={'row'} justify={'center'} alignItems={'center'}>
-                    <Grid item xs={8}>
+                    <Grid item xs={10} sm={8}>
                         <SignInForm/>
                     </Grid>
                 </Grid>

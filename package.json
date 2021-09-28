@@ -117,7 +117,6 @@
   },
   "scripts": {
     "imagemin-webp": "node imagemin-webp.js",
-    "start2": "react-app-rewired  start",
     "start": "react-scripts start",
     "build:local": "react-scripts build",
     "build:itest": "env-cmd -f .env.test react-scripts build",

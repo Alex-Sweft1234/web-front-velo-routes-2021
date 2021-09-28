@@ -29,11 +29,12 @@ const Modal = ({width, maxWidth, name = 'default', className, title, children, c
           disableBackdropClick={true}
           open={show}
           onClose={onCloseModal}
-          fullScreen={small}
+          //fullScreen={small}
       >
         <DialogTitle disableTypography={true}>
           <Box className={classes.title} pt={4}>
             {ReactHtmlParser(title)}
+            <hr color={colors.pink} size={2} className={classes.line} noshade/>
           </Box>
         </DialogTitle>
         {close && (
@@ -53,9 +54,6 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiDialog-paperWidthSm': {
       overflow: 'hidden',
       margin: 0,
-      [theme.breakpoints.down('sm')]: {
-        maxWidth: 400,
-      },
       [theme.breakpoints.down('xs')]: {
         maxWidth: '100%',
       }
@@ -93,6 +91,15 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       fontSize: 30,
     },
+  },
+  line: {
+    marginTop: 10,
+    marginBottom: 5,
+    width: 400,
+
+    [theme.breakpoints.down('xs')]: {
+      width: 310,
+    }
   }
 }))
 

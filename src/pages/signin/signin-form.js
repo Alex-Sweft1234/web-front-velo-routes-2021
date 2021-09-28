@@ -1,11 +1,32 @@
+import {useState} from 'react'
 import {useForm, Controller} from 'react-hook-form'
-import {makeStyles, TextField, FormControl, FormGroup, FormControlLabel, Checkbox, Button, Box, FormHelperText} from '@material-ui/core'
-import {Check} from '@material-ui/icons'
-import {colors, font} from '../../theme'
+import {Signin} from '../../api/service'
+import {email as emailRules, password as passwordRules} from '../../components/form-control/rules-valid-form'
+import useReactRouter from 'use-react-router'
+import {useDispatch} from 'react-redux'
+import {authAction, openModal} from '../../redux/actions/actions'
+import {AUTH_FAILURE, AUTH_REQUEST, AUTH_SUCCESS, CLOSE_MODAL} from '../../redux/actions/action-types'
+import {TextField, Button, Box, IconButton} from '@material-ui/core'
+import {Alert} from '../../components'
+import {VisibilityOutlined, VisibilityOffOutlined} from '@material-ui/icons'
+import InputAdornment from '@material-ui/core/InputAdornment'
 
 const SignInForm = () => {
 
-    const classes = useStyles()
+    const dispatch = useDispatch()
+    const {history} = useReactRouter()
+
+    const [errorMessage, setErrorMessage] = useState(undefined)
+    const [showPas, setShowPas] = useState(false)
+    const [alert, setAlert] = useState(false)
+
+    const handleClickShowPassword = () => {
+        setShowPas(!showPas)
+    }
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault()
+    }
 
     //react-hook-form
     const {
@@ -15,7 +36,36 @@ const SignInForm = () => {
     } = useForm({mode: 'onBlur'})
 
     const onSubmit = data => {
-        console.log(data)
+
+        authAction(dispatch, AUTH_REQUEST)
+
+        const signinData = {
+            email: data.email,
+            password: data.password,
+            returnSecureToken: true
+        }
+
+        Signin(signinData).then(
+            res => {
+                if(typeof res.data.registered !== 'undefined' && res.data.registered) {
+                    authAction(dispatch, AUTH_SUCCESS)
+                    openModal(dispatch, CLOSE_MODAL)
+                    history.push('/main')
+                } else {
+                    authAction(dispatch, AUTH_FAILURE)
+                    if(res.data.error.message === 'EMAIL_NOT_FOUND') {
+                        setErrorMessage('Учетная запись с введенным адресом эл. почты не зарегистрирована.')
+                        setAlert(true)
+                    } else if(res.data.error.message === 'INVALID_PASSWORD'){
+                        setErrorMessage('Неверный пароль. Попробуйте еще раз.')
+                        setAlert(true)
+                    } else if(res.data.error.message === 'USER_DISABLED'){
+                        setErrorMessage('Учетная запись пользователя отключена администратором.')
+                        setAlert(true)
+                    }
+                }
+            }
+        )
     }
 
     return(
@@ -25,11 +75,7 @@ const SignInForm = () => {
                 control={control}
                 name='email'
                 defaultValue=''
-                rules={{
-                    required: true,
-                    maxLength: 50,
-                    pattern: /^\s*([\w.%+-]+)@([\w-]+\.)+([\w]{2,})\s*$/i
-                }}
+                rules={emailRules}
                 render={({field: {onChange, onBlur, value}}) => (
                     <TextField
                         fullWidth
@@ -47,8 +93,52 @@ const SignInForm = () => {
                     />
                 )}
             />
+            {/*password*/}
+            <Controller
+                control={control}
+                name='password'
+                defaultValue=''
+                rules={passwordRules}
+                render={({field: {onChange, onBlur, value}}) => (
+                    <TextField
+                        fullWidth
+                        type={showPas ? 'text' : 'password'}
+                        label='Пароль'
+                        color='primary'
+                        variant='outlined'
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        value={value}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                    >
+                                        {showPas ? <VisibilityOutlined /> : <VisibilityOffOutlined />}
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }}
+                        helperText={
+                            (errors?.password?.type === "required" && <p>Поле не заполнено</p>) ||
+                            (errors?.password?.type === "minLength" && <p>Мин. длинна пароля 8 символов</p>)
+                        }
+                    />
+                )}
+            />
+            {/*alert*/}
+            <Alert
+                severity='error'
+                errorMessage={errorMessage}
+                show={alert}
+                onClose={() => {
+                    setAlert(false)
+                }}
+            />
             {/*submit button*/}
-            <Box mt={2}>
+            <Box mt={3}>
                 <Button fullWidth type='submit' variant='contained' color='primary'>
                     Войти
                 </Button>
@@ -56,78 +146,5 @@ const SignInForm = () => {
         </form>
     )
 }
-
-const useStyles = makeStyles((theme) => ({
-    label: {
-        color: 'rgba(1, 1, 1, .3)',
-    },
-    select: {
-        fontSize: 16,
-        color: colors.black,
-        fontFamily: font.default,
-        '& .MuiSelect-outlined.MuiSelect-outlined': {
-            paddingTop: 10
-        },
-        '& .MuiSelect-icon': {
-            marginTop: 0,
-            marginRight: 10,
-            fontSize: 25
-        },
-        '& .MuiSelect-select:focus': {
-            backgroundColor: 'transparent!important'
-        },
-    },
-    icon: {
-        width: 26,
-        height: 26,
-        color: colors.white,
-        borderRadius: 4,
-        border: '2px solid' + colors.blue,
-        backgroundColor: colors.white,
-    },
-    checkedIcon: {
-        width: 22,
-        height: 22,
-        color: colors.white,
-        borderRadius: 2,
-        backgroundColor: colors.blue,
-        fontWeight: 900,
-    },
-    checkboxLabelContent: {
-        marginLeft: 10,
-        textAlign: 'left',
-        textTransform: 'initial',
-        color: colors.black,
-        fontWeight: 400,
-        fontSize: 16,
-        lineHeight: 1.3,
-        fontFamily: font.default,
-        display: 'inline-block',
-        transition: '.3s',
-        [theme.breakpoints.down('md')]: {
-            fontSize: 15,
-            marginLeft: 5,
-        },
-        [theme.breakpoints.down('xs')]: {
-            fontSize: 14,
-        },
-        '& a': {
-            color: colors.blue,
-            transition: '.3s',
-            '&:hover': {
-                opacity: .8
-            }
-        },
-    },
-    formControl: {
-        alignItems: 'flex-start'
-    },
-    helperText: {
-        marginLeft: 46,
-        [theme.breakpoints.down('md')]: {
-            marginLeft: 41,
-        }
-    }
-}))
 
 export default SignInForm

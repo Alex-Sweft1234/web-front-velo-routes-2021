@@ -4,8 +4,11 @@ import '../styles/font.css'
 import font from './font'
 import colors from './colors'
 
-const breakpoints = createBreakpoints({})
-const defaultTheme = createTheme()
+const {
+    spacing,
+    breakpoints: { down, up, values },
+} = createTheme()
+
 
 const theme = createTheme({
     breakpoints: {
@@ -32,7 +35,7 @@ const theme = createTheme({
                 '&.popoverButton': {
                     //color: _palette.text.secondary,
                     border: '1px solid #fff',
-                    borderRadius: defaultTheme.spacing(2),
+                    borderRadius: spacing(2),
                 },
             },
             label: {},
@@ -81,7 +84,7 @@ const theme = createTheme({
                 fontWeight: 400,
                 fontSize: 25,
                 fontFamily: font.default,
-                [breakpoints.down('sm')]: {
+                [down('sm')]: {
                     paddingLeft: 0,
                     paddingRight: 0,
                     paddingBottom: 0,
@@ -100,29 +103,29 @@ const theme = createTheme({
                     },
                 },
                 '&>*:last-child': {
-                    marginBottom: defaultTheme.spacing(0),
+                    marginBottom: spacing(0),
                 },
                 '& .fields': {
                     textAlign: 'center',
                     //color: _palette.text.secondary,
                     backgroundColor: 'transparent',
-                    paddingTop: defaultTheme.spacing(2),
+                    paddingTop: spacing(2),
                     '& fieldset': {
                         // borderColor: '#f4d48c!important',
                     },
 
-                    [breakpoints.down('sm')]: {},
-                    [breakpoints.down('xs')]: {
-                        // paddingTop: defaultTheme.spacing(4),
+                    [down('sm')]: {},
+                    [down('xs')]: {
+                        // paddingTop: spacing(4),
                     },
 
                     '& .field_row>*': {
-                        [breakpoints.up('md')]: {
+                        [up('md')]: {
                             '&:first-child:not(:last-child)': {
-                                paddingRight: defaultTheme.spacing(1),
+                                paddingRight: spacing(1),
                             },
                             '&:last-child:not(:first-child)': {
-                                paddingLeft: defaultTheme.spacing(1),
+                                paddingLeft: spacing(1),
                             },
                         },
                     },
@@ -156,7 +159,7 @@ const theme = createTheme({
                 display: 'flex',
                 justifyContent: 'center',
 
-                [breakpoints.down('sm')]: {
+                [down('sm')]: {
                     fontSize: 20,
                 },
             },
@@ -186,13 +189,10 @@ const theme = createTheme({
                 '&:hover': {
                     borderColor: colors.white,
                     color: colors.white,
-                    //backgroundColor: _palette.text.primary,
                     textShadow: 'none',
                 },
                 '&:active,&.active': {},
-                '&$disabled': {
-
-                },
+                '&$disabled': {},
             },
             sizeLarge: {
                 fontSize: 21,
@@ -203,11 +203,11 @@ const theme = createTheme({
                 '&:hover': {
                     border: '3px solid #FFFFFF',
                 },
-                [breakpoints.down('sm')]: {
+                [down('sm')]: {
                     fontSize: 18,
                     height: 60,
                 },
-                [breakpoints.down('xs')]: {
+                [down('xs')]: {
                     fontSize: 16,
                     height: '50px!important',
                 },
@@ -259,20 +259,20 @@ const theme = createTheme({
                     background: 'linear-gradient(103.86deg, #9F7F39 21.8%, #E2D386 47.95%, #9F7F39 77.62%)',
                     color: colors.black,
                 },
-                [breakpoints.down('md')]: {
+                [down('md')]: {
                     fontSize: 21,
                 }
             },
             containedPrimary: {
                 fontSize: 18,
-                borderRadius: 40,
+                borderRadius: 30,
                 minWidth: 170,
                 backgroundColor: colors.blue,
                 color: colors.white,
-                minHeight: 70,
+                minHeight: 60,
                 fontWeight: 600,
                 transition: '.5s',
-                [breakpoints.down('sm')]: {
+                [down('sm')]: {
                     fontSize: 18,
                 },
                 '&:hover':{
@@ -417,10 +417,10 @@ const theme = createTheme({
                 color: colors.blue,
                 borderRadius: '50%',
                 transition: '.3s',
-                [breakpoints.down('md')]: {
+                [down('md')]: {
                     fontSize: 16,
                 },
-                [breakpoints.down('xs')]: {
+                [down('xs')]: {
                     fontSize: 14,
                     width: 25,
                     height: 30,
@@ -463,7 +463,7 @@ const theme = createTheme({
                 height: 40,
                 width: 40,
                 borderRadius: 10,
-                [breakpoints.down('xs')]: {
+                [down('xs')]: {
                     height: 29,
                     width: 29,
                 },
@@ -648,7 +648,7 @@ const theme = createTheme({
                 paddingLeft: 25,
                 paddingRight: 25,
                 minHeight: 70,
-                [breakpoints.down('sm')]: {
+                [down('sm')]: {
                     fontSize: 22,
                 },
                 '&$expanded': {
@@ -663,7 +663,7 @@ const theme = createTheme({
                 fontSize: 24,
                 fontFamily: font.default,
                 transition: '.3s',
-                [breakpoints.down('md')]: {
+                [down('md')]: {
                     fontSize: 20,
                 }
             },
@@ -696,7 +696,7 @@ const theme = createTheme({
                 borderBottomLeftRadius: 10,
                 borderBottomRightRadius: 10,
                 transition: '.3s',
-                [breakpoints.down('md')]: {
+                [down('md')]: {
                     fontSize: 16,
                 },
                 '& a': {},
@@ -832,11 +832,11 @@ const theme = createTheme({
                 textAlign: 'center',
                 color: '#fff',
                 textTransform: 'uppercase',
-                marginTop: defaultTheme.spacing(12),
-                marginBottom: defaultTheme.spacing(4),
+                marginTop: spacing(12),
+                marginBottom: spacing(4),
                 fontSize: 32,
                 fontWeight: 700,
-                [breakpoints.down('sm')]: {
+                [down('sm')]: {
                     fontSize: 24,
                 },
             },
@@ -858,11 +858,11 @@ const theme = createTheme({
                 backgroundColor: '#102659',
                 boxShadow: 'none',
                 borderRadius: 10,
-                padding: defaultTheme.spacing(2),
+                padding: spacing(2),
                 color: '#fff',
                 fontWeight: 400,
                 textAlign: 'center',
-                [breakpoints.down('sm')]: {
+                [down('sm')]: {
                     height: 'auto',
                 },
                 '& span': {
@@ -883,7 +883,7 @@ const theme = createTheme({
                     textAlign: 'center',
                 },
                 '& h1, & h2': {
-                    marginTop: defaultTheme.spacing(1),
+                    marginTop: spacing(1),
                     textTransform: 'uppercase',
                     color: '#fff',
                     fontWeight: 600,
@@ -905,7 +905,7 @@ const theme = createTheme({
                 margin: '0 30px',
                 maxWidth: 185,
                 maxHeight: 80,
-                [breakpoints.down('sm')]: {
+                [down('sm')]: {
                     margin: '0 5px',
                     maxWidth: 140,
                     maxHeight: 80,
@@ -919,7 +919,7 @@ const theme = createTheme({
                 fontFamily: font.default,
                 transform: 'scale(.7, 1)',
                 color: colors.white,
-                [breakpoints.down('sm')]: {
+                [down('sm')]: {
                     fontSize: 28,
                     padding: '0 0.4em',
                 },

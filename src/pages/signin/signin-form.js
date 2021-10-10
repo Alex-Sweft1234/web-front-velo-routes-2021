@@ -2,6 +2,7 @@ import {useState} from 'react'
 import {useForm, Controller} from 'react-hook-form'
 import {Signin} from '../../api/service'
 import {email as emailRules, password as passwordRules} from '../../components/form-control/rules-valid-form'
+import {email as emailHelperText, password as passwordHelperText} from '../../components/form-control/helper-text-valid-form'
 import useReactRouter from 'use-react-router'
 import {useDispatch} from 'react-redux'
 import {authAction, openModal} from '../../redux/actions/actions'
@@ -85,11 +86,7 @@ const SignInForm = () => {
                         onBlur={onBlur}
                         onChange={onChange}
                         value={value}
-                        helperText={
-                            (errors?.email?.type === "required" && <p>Поле не заполнено</p>) ||
-                            (errors?.email?.type === "pattern" && <p>Указан некорректный e-mail</p>) ||
-                            (errors?.email?.type === "maxLength" && <p>Макс. длинна поля 50 символов</p>)
-                        }
+                        helperText={emailHelperText(errors)}
                     />
                 )}
             />
@@ -121,10 +118,7 @@ const SignInForm = () => {
                                 </InputAdornment>
                             )
                         }}
-                        helperText={
-                            (errors?.password?.type === "required" && <p>Поле не заполнено</p>) ||
-                            (errors?.password?.type === "minLength" && <p>Мин. длинна пароля 8 символов</p>)
-                        }
+                        helperText={passwordHelperText(errors)}
                     />
                 )}
             />

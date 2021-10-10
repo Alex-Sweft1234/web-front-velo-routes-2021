@@ -14,3 +14,10 @@ export const password = {
     required: true,
     minLength: 8
 }
+
+export const repeat_passwort = (watch) => {
+    return {
+        required: true,
+        validate: value => value === watch('password')
+    }
+}

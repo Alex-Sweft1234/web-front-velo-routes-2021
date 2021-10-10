@@ -2,16 +2,30 @@ import {useState} from "react"
 import {useForm, Controller} from 'react-hook-form'
 import {Signup} from '../../api/service'
 import {Alert} from '../../components'
-import {email as emailRules, password as passwordRules, firstname as firstnameRules} from '../../components/form-control/rules-valid-form'
+import {
+    email as emailRules,
+    password as passwordRules,
+    firstname as firstnameRules,
+    repeat_passwort as repeatPasswort
+} from '../../components/form-control/rules-valid-form'
+import {
+    email as emailHelperText,
+    password as passwordHelperText,
+    repeat_password as repeatPasswordHelperText
+} from '../../components/form-control/helper-text-valid-form'
 import {makeStyles, TextField, FormControl, FormGroup, FormControlLabel, Checkbox, Button, Box, FormHelperText, IconButton} from '@material-ui/core'
 import {Check} from '@material-ui/icons'
 import {colors, font} from '../../theme'
 import InputAdornment from "@material-ui/core/InputAdornment"
 import {VisibilityOutlined, VisibilityOffOutlined} from '@material-ui/icons'
+import {useDispatch} from 'react-redux'
+import {openModal} from "../../redux/actions/actions";
+import {SIGNIN_MODAL} from '../../redux/actions/action-types'
 
 const SignUpForm = () => {
 
     const classes = useStyles()
+    const dispatch = useDispatch()
 
     const [errorMessage, setErrorMessage] = useState(undefined)
     const [showPas, setShowPas] = useState(false)
@@ -34,7 +48,6 @@ const SignUpForm = () => {
     } = useForm({mode: 'onBlur'})
 
     const onSubmit = data => {
-        //console.log(data)
         const signupData = {
             email: data.email,
             password: data.password,
@@ -42,15 +55,19 @@ const SignUpForm = () => {
         }
         Signup(signupData).then(
             res => {
-                if(res.data.error.message === 'EMAIL_EXISTS') {
-                    setErrorMessage('Введенный адрес эл. почты уже зарегистрирован.')
-                    setAlert(true)
-                } else if(res.data.error.message === 'OPERATION_NOT_ALLOWED'){
-                    setErrorMessage('Пароль отклонён. Попробуйте еще раз.')
-                    setAlert(true)
-                } else if(res.data.error.message === 'TOO_MANY_ATTEMPTS_TRY_LATER'){
-                    setErrorMessage('Запросы с вашего устройства заблокированы из-из подозрительной активности.')
-                    setAlert(true)
+                if(typeof res.data.error !== 'undefined') {
+                    if(res.data.error.message === 'EMAIL_EXISTS') {
+                        setErrorMessage('Введенный адрес эл. почты уже зарегистрирован.')
+                        setAlert(true)
+                    } else if(res.data.error.message === 'OPERATION_NOT_ALLOWED'){
+                        setErrorMessage('Пароль отклонён. Попробуйте еще раз.')
+                        setAlert(true)
+                    } else if(res.data.error.message === 'TOO_MANY_ATTEMPTS_TRY_LATER'){
+                        setErrorMessage('Запросы с вашего устройства заблокированы из-из подозрительной активности.')
+                        setAlert(true)
+                    }
+                } else {
+                    openModal(dispatch, SIGNIN_MODAL)
                 }
             }
         )
@@ -96,11 +113,7 @@ const SignUpForm = () => {
                         onBlur={onBlur}
                         onChange={onChange}
                         value={value}
-                        helperText={
-                            (errors?.email?.type === "required" && <p>Поле не заполнено</p>) ||
-                            (errors?.email?.type === "pattern" && <p>Указан некорректный e-mail</p>) ||
-                            (errors?.email?.type === "maxLength" && <p>Макс. длинна поля 50 символов</p>)
-                        }
+                        helperText={emailHelperText(errors)}
                     />
                 )}
             />
@@ -132,10 +145,7 @@ const SignUpForm = () => {
                                 </InputAdornment>
                             )
                         }}
-                        helperText={
-                            (errors?.password?.type === "required" && <p>Поле не заполнено</p>) ||
-                            (errors?.password?.type === "minLength" && <p>Мин. длинна пароля 8 символов</p>)
-                        }
+                        helperText={passwordHelperText(errors)}
                     />
                 )}
             />
@@ -144,10 +154,7 @@ const SignUpForm = () => {
                 control={control}
                 name='repeatpassword'
                 defaultValue=''
-                rules={{
-                    required: true,
-                    validate: value => value === watch('password')
-                }}
+                rules={repeatPasswort(watch)}
                 render={({field: {onChange, onBlur, value}}) => (
                     <TextField
                         fullWidth
@@ -158,10 +165,7 @@ const SignUpForm = () => {
                         onBlur={onBlur}
                         onChange={onChange}
                         value={value}
-                        helperText={
-                            (errors?.repeatpassword?.type === "required" && <p>Поле не заполнено</p>) ||
-                            (errors?.repeatpassword?.type === "validate" && <p>Пароли не совпадают</p>)
-                        }
+                        helperText={repeatPasswordHelperText(errors)}
                     />
                 )}
             />

@@ -2,6 +2,7 @@ import {useWindowDimensions} from '../../components'
 import {Box, Button, Container, Grid, makeStyles} from '@material-ui/core'
 import {FadeContainer} from '../../components'
 import Fade from 'react-reveal/Fade'
+import Zoom from '@material-ui/core/Zoom'
 import {colors, font} from '../../theme'
 import fon from'../../img/initial-fon.jpg.webp'
 import {useDispatch} from 'react-redux'
@@ -35,34 +36,32 @@ const InitialPage = () => {
                     className={classes.container}
                 >
                     <Container maxWidth={'md'}>
-                        <Fade top duration={1000} delay={700}>
-                            {/*<Box width='100%' display='flex' justifyContent='center'>*/}
-                            {/*    <img src={logo} className={classes.logo} alt='...'/>*/}
-                            {/*</Box>*/}
-                            <Grid container direction={'row'} justify={'space-evenly'} alignItems={'flex-start'} spacing={1}>
-                                <Grid item xs={12} sm={'auto'} style={{display: 'flex', justifyContent: 'center'}}>
-                                    <Button classes={{root: classes.button}} onClick={openSignIn}>
-                                        Войти
-                                    </Button>
-                                </Grid>
-                                <Grid item xs={12} sm={'auto'} style={{display: 'flex', justifyContent: 'center'}}>
-                                    <Button classes={{root: classes.button}} onClick={openSignUp}>
-                                        Зарегистрироваться
-                                    </Button>
-                                </Grid>
+                        {/*<Box width='100%' display='flex' justifyContent='center'>*/}
+                        {/*    <img src={logo} className={classes.logo} alt='...'/>*/}
+                        {/*</Box>*/}
+                        <Grid container direction={'row'} justify={'space-evenly'} alignItems={'flex-start'} spacing={1}>
+                            <Grid item xs={12} sm={'auto'} style={{display: 'flex', justifyContent: 'center'}}>
+                                <Button classes={{root: classes.button}} onClick={openSignIn}>
+                                    Войти
+                                </Button>
                             </Grid>
-                        </Fade>
-                        <Fade top duration={1000} delay={500}>
-                            <Grid container direction={'row'} justify={'center'} alignItems={'center'} spacing={1}>
-                                <Grid item xs={11} md={9} >
+                            <Grid item xs={12} sm={'auto'} style={{display: 'flex', justifyContent: 'center'}}>
+                                <Button classes={{root: classes.button}} onClick={openSignUp}>
+                                    Зарегистрироваться
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid container direction={'row'} justify={'center'} alignItems={'center'} spacing={1}>
+                            <Grid item xs={11} md={9}>
+                                <Zoom in={true} timeout={{enter: 700}}>
                                     <Box className={classes.title}>
                                         Если любишь велосипеды,<br/>
                                         поделись своими любимыми маршрутами и<br/>
                                         расскажи нам интересные истории о велопоездках !
                                     </Box>
-                                </Grid>
+                                </Zoom>
                             </Grid>
-                        </Fade>
+                        </Grid>
                     </Container>
                 </Box>
             </Box>
@@ -99,12 +98,12 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: 'rgba(255, 255, 255, .15)'
     },
     button: {
-        minHeight: 80,
+        minHeight: 70,
         width: 330,
         backgroundColor: colors.blue,
         color: colors.white,
         fontSize: 22,
-        borderRadius: 50,
+        borderRadius: 30,
         marginBottom: 40,
         transition: '.5s',
         '&:hover': {
